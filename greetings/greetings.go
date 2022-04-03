@@ -1,13 +1,19 @@
 package greetings
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 // Hello returns a greeting for the named person.
-func Hello(name string) string {
+func Hello(name string) (string, error) {
+	// If no name was give, return an error with a message
 	if name == "" {
-		name = "World"
+		return "", errors.New("empty name")
 	}
-	// Return a greeting that embeds the name in a message.
+
+	// If a name was received, return a value that embeds the name
+	// in a greatting message.
 	message := fmt.Sprintf("Hi, %v. Welcome to the Go programming language!", name)
-	return message
+	return message, nil
 }
