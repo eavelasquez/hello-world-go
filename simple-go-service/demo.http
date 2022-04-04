@@ -1,0 +1,46 @@
+// Demo file for use with REST Client for Visual Studio Code
+// See https://github.com/Huachao/vscode-restclient
+//
+// Edit the values below match your environment if required
+@hostname = localhost
+@port = 8000
+@baseUrl = http://{{hostname}}:{{port}}
+@apiUrl = {{baseUrl}}/users
+@id = 1
+
+### Check the server is ready
+
+GET {{baseUrl}} HTTP/1.1
+
+### Get all users
+
+GET {{apiUrl}} HTTP/1.1
+content-type: application/json
+
+### Get an user by ID
+
+GET {{apiUrl}}/{{id}} HTTP/1.1
+content-type: application/json
+
+### Create an user
+
+POST {{apiUrl}} HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Alice Smith"
+}
+
+### Update an user
+
+PUT {{apiUrl}}/{{id}} HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Bob Smith"
+}
+
+### Delete an user
+
+DELETE {{apiUrl}}/{{id}} HTTP/1.1
+content-type: application/json
