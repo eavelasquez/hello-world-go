@@ -16,9 +16,12 @@ func main() {
 	log.SetPrefix("greetings: ")
 	log.SetFlags(0)
 
+	// A slice of names to greet.
+	names := []string{"Rozemyne", "Charlotte", "Sophie"}
+
 	// Request a greeting from the package-level function.
-	// The package-level function returns a string and an error.
-	message, err := greetings.Hello("Ai")
+	// The package-level function returns a map of names to greetings.
+	messages, err := greetings.Hellos(names)
 
 	// If an error was returned, print it to the console and
 	// exit the program.
@@ -27,5 +30,5 @@ func main() {
 	}
 
 	// If no error was returned, print the greeting message to the console.
-	fmt.Println(message)
+	fmt.Println(messages)
 }
