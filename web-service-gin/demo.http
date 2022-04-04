@@ -1,0 +1,51 @@
+// Demo file for use with REST Client for Visual Studio Code
+// See https://github.com/Huachao/vscode-restclient
+//
+// Edit the values below match your environment if required
+@hostname = localhost
+@port = 8080
+@baseUrl = http://{{hostname}}:{{port}}
+@apiUrl = {{baseUrl}}/albums
+
+
+### Check the server is ready
+
+GET {{baseUrl}}/ HTTP/1.1
+
+### Get all albums
+
+GET {{apiUrl}}/ HTTP/1.1
+content-type: application/json
+
+### Get an album by ID
+
+GET {{apiUrl}}/2 HTTP/1.1
+content-type: application/json
+
+### Create an album
+
+POST {{apiUrl}}/ HTTP/1.1
+content-type: application/json
+
+{
+    "id": "5",
+    "title": "The Modern Sound of Betty Carter",
+    "artist": "Betty Carter",
+    "price": 49.99
+}
+
+### Update an album
+
+PUT {{apiUrl}}/2 HTTP/1.1
+content-type: application/json
+
+{
+    "title": "The Modern Sound of Betty Carter",
+    "artist": "Betty Carter",
+    "price": 12
+}
+
+### Delete an album
+
+DELETE {{apiUrl}}/4 HTTP/1.1
+content-type: application/json
