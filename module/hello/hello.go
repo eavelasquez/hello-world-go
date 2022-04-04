@@ -18,7 +18,7 @@ func main() {
 
 	// Request a greeting from the package-level function.
 	// The package-level function returns a string and an error.
-	message, err := greetings.Hello("Rozemyne")
+	message, err := greetings.Hello("Ai")
 
 	// If an error was returned, print it to the console and
 	// exit the program.
