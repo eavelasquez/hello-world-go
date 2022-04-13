@@ -15,7 +15,7 @@ type Page struct {
 }
 
 // template.Must is a helper function for loading templates
-var templates = template.Must(template.ParseFiles("views/edit.html", "views/view.html"))
+var templates = template.Must(template.ParseFiles("tmpl/edit.html", "tmpl/view.html"))
 
 // validPath is a regexp that matches paths that are valid for the wiki
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
@@ -23,13 +23,13 @@ var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
 // save saves the Page's Body to a text file
 func (p *Page) save() error {
 	filename := p.Title + ".txt"
-	return os.WriteFile(filename, p.Body, 0600)
+	return os.WriteFile("data/"+filename, p.Body, 0600)
 }
 
 // loadPage reads a text file and stores the body in the Page struct
 func loadPage(title string) (*Page, error) {
 	filename := title + ".txt"
-	body, err := os.ReadFile(filename)
+	body, err := os.ReadFile("data/" + filename)
 	if err != nil {
 		return nil, err
 	}
