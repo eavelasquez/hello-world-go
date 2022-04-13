@@ -46,6 +46,15 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "view", p)
 }
 
+// saveHandler handles requests to /save/{title} for saving a page
+func saveHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/save/"):]
+	body := r.FormValue("body")
+	p := &Page{Title: title, Body: []byte(body)}
+	p.save()
+	http.Redirect(w, r, "/view/"+title, http.StatusFound)
+}
+
 // editHandler handles requests to /edit/{title} for editing a page
 func editHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/edit/"):]
@@ -59,6 +68,7 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 // main is the entry point for the application
 func main() {
 	http.HandleFunc("/view/", viewHandler)
+	http.HandleFunc("/save/", saveHandler)
 	http.HandleFunc("/edit/", editHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
