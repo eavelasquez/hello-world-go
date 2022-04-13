@@ -13,6 +13,9 @@ type Page struct {
 	Body  []byte
 }
 
+// template.Must is a helper function for loading templates
+var templates = template.Must(template.ParseFiles("views/edit.html", "views/view.html"))
+
 // save saves the Page's Body to a text file
 func (p *Page) save() error {
 	filename := p.Title + ".txt"
@@ -31,12 +34,7 @@ func loadPage(title string) (*Page, error) {
 
 // renderTemplate is a helper function for rendering templates
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-	t, err := template.ParseFiles("views/" + tmpl + ".html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	err = t.Execute(w, p)
+	err := templates.ExecuteTemplate(w, tmpl+".html", p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
