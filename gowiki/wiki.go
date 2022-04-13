@@ -15,7 +15,7 @@ type Page struct {
 }
 
 // template.Must is a helper function for loading templates
-var templates = template.Must(template.ParseFiles("tmpl/edit.html", "tmpl/view.html"))
+var templates = template.Must(template.ParseFiles("tmpl/index.html", "tmpl/view.html", "tmpl/edit.html"))
 
 // validPath is a regexp that matches paths that are valid for the wiki
 var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9]+)$")
@@ -75,6 +75,17 @@ func editHandler(w http.ResponseWriter, r *http.Request, title string) {
 	renderTemplate(w, "edit", p)
 }
 
+// rootHandler redirects to the index page
+func rootHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/view/index", http.StatusFound)
+}
+
+// indexHandler handles requests to the root of the wiki
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	p := &Page{Title: "ExamplePage"}
+	renderTemplate(w, "index", p)
+}
+
 // makeHandler is a helper function for creating handlers
 func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -91,6 +102,8 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 
 // main is the entry point for the application
 func main() {
+	http.HandleFunc("/", rootHandler)
+	http.HandleFunc("/view/index", indexHandler)
 	http.HandleFunc("/view/", makeHandler(viewHandler))
 	http.HandleFunc("/save/", makeHandler(saveHandler))
 	http.HandleFunc("/edit/", makeHandler(editHandler))
