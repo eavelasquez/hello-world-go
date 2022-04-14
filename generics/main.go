@@ -50,4 +50,8 @@ func main() {
 	fmt.Printf("Generic Sums: %v and %v\n",
 		SumIntsOrFloats[string, int64](ints),
 		SumIntsOrFloats[string, float64](floats))
+
+	fmt.Printf("Generic Sums, type parameters inferred: %v and %v\n",
+		SumIntsOrFloats(ints),
+		SumIntsOrFloats(floats))
 }
