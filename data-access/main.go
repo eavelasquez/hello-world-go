@@ -11,6 +11,13 @@ import (
 
 var db *sql.DB
 
+type Album struct {
+	ID     int64
+	Title  string
+	Artist string
+	Price  float32
+}
+
 func main() {
 	// capture the connection properties
 	cfg := mysql.Config{
@@ -54,13 +61,19 @@ func main() {
 
 	// print the album
 	fmt.Printf("Album found: %v\n", alb)
-}
 
-type Album struct {
-	ID     int64
-	Title  string
-	Artist string
-	Price  float32
+	// add an album
+	albID, err := addAlbum(Album{
+		Title:  "The Modern Sound of Betty Carter",
+		Artist: "Betty Carter",
+		Price:  49.99,
+	})
+	if err != nil {
+		log.Fatalf("Error adding album: %s", err)
+	}
+
+	// print the ID of the newly inserted album
+	fmt.Printf("Album added with ID: %v\n", albID)
 }
 
 // albumsByArtist queries for albums that have the specified artist name.
@@ -77,6 +90,7 @@ func albumsByArtist(name string) ([]Album, error) {
 	// loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var alb Album
+
 		err := rows.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning album row into Album struct: %v", err)
@@ -110,4 +124,21 @@ func albumByID(id int64) (Album, error) {
 	}
 
 	return alb, nil
+}
+
+// addAlbum adds the specified album to the database,
+// returning the album's ID.
+func addAlbum(alb Album) (int64, error) {
+	result, err := db.Exec("INSERT INTO albums (title, artist, price) VALUES (?, ?, ?)", alb.Title, alb.Artist, alb.Price)
+	if err != nil {
+		return 0, fmt.Errorf("error inserting album into database: %v", err)
+	}
+
+	// get the ID of the newly inserted album.
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("error getting ID of newly inserted album: %v", err)
+	}
+
+	return id, nil
 }
