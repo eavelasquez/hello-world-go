@@ -36,4 +36,78 @@ func main() {
 	}
 
 	fmt.Println("Successfully connected to database!")
+
+	// query for albums by artist - hard-code name "John Coltrane" here.
+	albums, err := albumsByArtist("John Coltrane")
+	if err != nil {
+		log.Fatalf("Error querying for albums: %s", err)
+	}
+
+	// print the albums
+	fmt.Printf("Albums found: %v\n", albums)
+
+	// query for album by ID - hard-code ID 2 here.
+	alb, err := albumByID(2)
+	if err != nil {
+		log.Fatalf("Error querying for album: %s", err)
+	}
+
+	// print the album
+	fmt.Printf("Album found: %v\n", alb)
+}
+
+type Album struct {
+	ID     int64
+	Title  string
+	Artist string
+	Price  float32
+}
+
+// albumsByArtist queries for albums that have the specified artist name.
+func albumsByArtist(name string) ([]Album, error) {
+	// an albums slice to hold data from returned rows.
+	var albums []Album
+
+	rows, err := db.Query("SELECT * FROM albums WHERE artist = ?", name)
+	if err != nil {
+		return nil, fmt.Errorf("error querying for albums by %q: %v", name, err)
+	}
+	defer rows.Close()
+
+	// loop through rows, using Scan to assign column data to struct fields.
+	for rows.Next() {
+		var alb Album
+		err := rows.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price)
+		if err != nil {
+			return nil, fmt.Errorf("error scanning album row into Album struct: %v", err)
+		}
+		albums = append(albums, alb)
+	}
+
+	// check for errors from iterating over rows.
+	err = rows.Err()
+	if err != nil {
+		return nil, fmt.Errorf("error iterating over rows: %v", err)
+	}
+
+	return albums, nil
+}
+
+// albumByID queries for a the album with the specified ID.
+func albumByID(id int64) (Album, error) {
+	// an album to hold data from the returned row.
+	var alb Album
+
+	row := db.QueryRow("SELECT * FROM albums WHERE id = ?", id)
+
+	// use Scan to assign column data to struct fields.
+	err := row.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return alb, fmt.Errorf("album with ID %d not found", id)
+		}
+		return alb, fmt.Errorf("error scanning album row into Album struct: %v", err)
+	}
+
+	return alb, nil
 }
