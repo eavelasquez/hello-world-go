@@ -15,3 +15,4 @@ The examples found here were developed from the [Go documentation](https://go.de
 | [Writing Web Applications](https://go.dev/doc/articles/wiki/) |
 | [Tutorial: Accessing a relational database](https://go.dev/doc/tutorial/database-access) |
 | [Password hashing with bcrypt](https://gowebexamples.com/password-hashing/) |
+| [Websockets](https://gowebexamples.com/websockets/) |

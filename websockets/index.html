@@ -1,0 +1,86 @@
+<style>
+    body {
+        font-family: sans-serif;
+    }
+
+    input {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 20px;
+        height: 50px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    button {
+        background-color: #00b4d8;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 20px;
+        height: 50px;
+        margin-top: 10px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .container {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: center;
+    }
+
+    .row {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .col-12 {
+        width: 100%;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1>WebSockets</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <input type="text" id="input" placeholder="Message">
+            <button type="button" id="send" onclick="send()">Send</button>
+            <pre id="output"></pre>
+        </div>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("input");
+    const output = document.getElementById("output");
+    const socket = new WebSocket("ws://localhost:8080/echo");
+
+    socket.onopen = (e) => {
+        output.innerHTML += "Status: Connected\n";
+    };
+
+    socket.onmessage = (e) => {
+        output.innerHTML += "Server: " + e.data + "\n";
+    };
+
+    socket.onclose = (e) => {
+        output.innerHTML += "Status: Disconnected\n";
+    };
+
+    const send = () => {
+        if (input.value === "") return;
+        socket.send(input.value);
+        input.value = "";
+    };
+</script>
